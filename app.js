@@ -541,24 +541,24 @@ function addBatchRow(values = {}) {
   const row = document.createElement("div");
   row.className = "batch-row";
   row.innerHTML = `
-    <button class="pokemon-select-button" type="button">选择</button>
-    <select class="batch-kind">
+    <div class="batch-field"><span class="field-label">选择</span><button class="pokemon-select-button" type="button">选择</button></div>
+    <label class="batch-field"><span class="field-label">类型</span><select class="batch-kind">
       <option value="single" ${(values.kind || "single") === "single" ? "selected" : ""}>单只本体</option>
       <option value="evolution" ${values.kind === "evolution" ? "selected" : ""}>进化组</option>
       <option value="mega" ${values.kind === "mega" ? "selected" : ""}>Mega系列</option>
-    </select>
-    <input class="batch-dex" type="number" min="1" max="2000" placeholder="001" value="${values.dex || ""}">
-    <input class="batch-name" type="text" placeholder="自动 / 自填" value="${escapeHtml(values.name || "")}">
-    <input class="batch-studio" type="text" placeholder="工作室" value="${escapeHtml(values.studio || "")}">
-    <select class="batch-status">
+    </select></label>
+    <label class="batch-field"><span class="field-label">编号</span><input class="batch-dex" type="number" min="1" max="2000" placeholder="001" value="${values.dex || ""}"></label>
+    <label class="batch-field"><span class="field-label">名称</span><input class="batch-name" type="text" placeholder="自动 / 自填" value="${escapeHtml(values.name || "")}"></label>
+    <label class="batch-field"><span class="field-label">工作室</span><input class="batch-studio" type="text" placeholder="工作室" value="${escapeHtml(values.studio || "")}"></label>
+    <label class="batch-field"><span class="field-label">状态</span><select class="batch-status">
       ${["已购", "预订", "已到货", "已售", "观望"].map((status) => `<option value="${status}" ${status === (values.status || "已购") ? "selected" : ""}>${status}</option>`).join("")}
-    </select>
-    <select class="batch-color">
+    </select></label>
+    <label class="batch-field"><span class="field-label">颜色</span><select class="batch-color">
       ${FIGURE_COLORS.map((color) => `<option value="${color}" ${color === normalizeFigureColor(values.color) ? "selected" : ""}>${color}</option>`).join("")}
-    </select>
-    <input class="batch-price" type="number" min="0" step="0.01" placeholder="价格" value="${escapeHtml(values.price || "")}">
-    <input class="batch-form" type="text" placeholder="形态、角色、渠道、备注" value="${escapeHtml(values.form || values.note || "")}">
-    <button class="secondary-button remove-row" type="button">移除</button>
+    </select></label>
+    <label class="batch-field"><span class="field-label">价格</span><input class="batch-price" type="number" min="0" step="0.01" placeholder="价格" value="${escapeHtml(values.price || "")}"></label>
+    <label class="batch-field"><span class="field-label">形态 / 备注</span><input class="batch-form" type="text" placeholder="形态、角色、渠道、备注" value="${escapeHtml(values.form || values.note || "")}"></label>
+    <div class="batch-field batch-field-remove"><span class="field-label">操作</span><button class="secondary-button remove-row" type="button">移除</button></div>
   `;
   if (values.megaKey) row.dataset.megaKey = values.megaKey;
   els.batchRows.append(row);
@@ -1035,14 +1035,14 @@ function renderInventoryRow(record) {
       <strong>No.${padDex(record.dex)} ${recordDisplayName(record)}</strong>
       <span>${record.studio || "未填工作室"} · ${record.color || "原色"} · ${record.form || "常规"} · ${generationOf(record.dex).label}</span>
     </div>
-    <select data-field="status">
+    <label class="inventory-field"><span class="field-label">状态</span><select data-field="status">
       ${["已购", "预订", "已到货", "已售", "观望"].map((status) => `<option value="${status}" ${status === record.status ? "selected" : ""}>${status}</option>`).join("")}
-    </select>
-    <select data-field="color">
+    </select></label>
+    <label class="inventory-field"><span class="field-label">颜色</span><select data-field="color">
       ${FIGURE_COLORS.map((color) => `<option value="${color}" ${color === normalizeFigureColor(record.color) ? "selected" : ""}>${color}</option>`).join("")}
-    </select>
-    <input data-field="studio" type="text" value="${escapeHtml(record.studio)}">
-    <input data-field="price" type="number" min="0" step="0.01" value="${record.price}">
+    </select></label>
+    <label class="inventory-field"><span class="field-label">工作室</span><input data-field="studio" type="text" value="${escapeHtml(record.studio)}"></label>
+    <label class="inventory-field"><span class="field-label">价格</span><input data-field="price" type="number" min="0" step="0.01" value="${record.price}"></label>
     <strong class="price">${currency(record.price)}</strong>
     <div class="row-actions">
       ${record.status === "预订" ? `<button class="arrive-button" type="button" data-action="arrive">到货</button>` : ""}
