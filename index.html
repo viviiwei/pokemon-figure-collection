@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>宝可梦手办收藏幻灯片</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-symbol">P</span>
+          <div>
+            <strong>宝可梦手办库</strong>
+            <small>Collection Slides</small>
+          </div>
+        </div>
+        <nav id="slideNav" class="slide-nav" aria-label="幻灯片导航"></nav>
+        <div class="sidebar-actions">
+          <button id="exportDexImageButton" type="button">导出图鉴长图</button>
+          <button id="exportButton" type="button">导出数据</button>
+          <label class="import-button">
+            导入数据
+            <input id="importInput" type="file" accept="application/json">
+          </label>
+          <button id="clearButton" type="button">清空本地数据</button>
+        </div>
+      </aside>
+
+      <main class="slides" id="slides">
+        <section class="slide active" data-slide="dashboard">
+          <header class="slide-header">
+            <div>
+              <p class="eyebrow">Dashboard</p>
+              <h1>宝可梦手办收藏总览</h1>
+            </div>
+            <div class="header-actions">
+              <button id="prevSlide" type="button" aria-label="上一页">‹</button>
+              <span id="slideCounter">1 / 7</span>
+              <button id="nextSlide" type="button" aria-label="下一页">›</button>
+            </div>
+          </header>
+          <div class="dashboard-grid">
+            <section class="hero-panel">
+              <div class="completion-ring" id="completionRing">
+                <span id="completionRate">0%</span>
+                <small>001-493 完成度</small>
+              </div>
+              <div class="metric-stack">
+                <div class="metric-card"><strong id="ownedSpecies">0</strong><span>已拥有种类</span></div>
+                <div class="metric-card"><strong id="pendingSpecies">0</strong><span>预订中种类</span></div>
+                <div class="metric-card"><strong id="totalPieces">0</strong><span>库存件数</span></div>
+                <div class="metric-card"><strong id="totalCost">¥0</strong><span>入手合计</span></div>
+              </div>
+            </section>
+            <section class="panel">
+              <div class="panel-head">
+                <h2>阶段进度</h2>
+                <span>Gen 1-4</span>
+              </div>
+              <div id="phaseStats" class="phase-stats"></div>
+            </section>
+            <section class="panel wide-panel">
+              <div class="panel-head">
+                <h2>状态规则</h2>
+                <span>图鉴背景色</span>
+              </div>
+              <div class="rule-grid">
+                <div><i class="dot owned-luxury"></i><strong>绿色</strong><span>已拥有豪车工作室</span></div>
+                <div><i class="dot owned-other"></i><strong>黄色</strong><span>已拥有其他工作室</span></div>
+                <div><i class="dot pending"></i><strong>蓝色</strong><span>仍有预订未到货</span></div>
+                <div><i class="dot missing"></i><strong>红色</strong><span>未拥有</span></div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="dex">
+          <header class="slide-header compact">
+            <div>
+              <p class="eyebrow">National Dex</p>
+              <h1>001-493 总图鉴</h1>
+            </div>
+            <div class="dex-header-actions">
+              <div class="segmented" id="phaseTabs"></div>
+              <button id="dexAddButton" class="primary-button" type="button">新增</button>
+            </div>
+          </header>
+          <div class="dex-toolbar">
+            <input id="dexSearch" type="search" placeholder="搜索编号、名称或工作室">
+            <select id="dexStatusFilter">
+              <option value="all">全部状态</option>
+              <option value="luxury">豪车已拥有</option>
+              <option value="other">其他工作室已拥有</option>
+              <option value="pending">预订中</option>
+              <option value="missing">未拥有</option>
+            </select>
+          </div>
+          <div id="dexGrid" class="dex-grid"></div>
+        </section>
+
+        <section class="slide" data-slide="teams">
+          <header class="slide-header compact">
+            <div>
+              <p class="eyebrow">Character Teams</p>
+              <h1>人物及其阵容</h1>
+            </div>
+            <select id="teamGroupFilter">
+              <option value="all">全部阵容</option>
+              <option value="ash">小智各时代</option>
+              <option value="masters">八大师</option>
+            </select>
+          </header>
+          <div id="teamBoard" class="team-board"></div>
+        </section>
+
+        <section class="slide" data-slide="add">
+          <header class="slide-header compact">
+            <div>
+              <p class="eyebrow">Batch Entry</p>
+              <h1>批量新增手办</h1>
+            </div>
+            <div class="add-actions">
+              <button id="addEntryRow" class="secondary-button" type="button">增加一行</button>
+              <button id="saveBatch" class="primary-button" type="button">保存本批</button>
+            </div>
+          </header>
+          <section class="ai-entry-panel">
+            <div class="panel-head">
+              <h2>智能文本录入</h2>
+              <span id="aiParseStatus">待解析</span>
+            </div>
+            <textarea id="aiTextInput" rows="4" placeholder="例：豪车 异色艾岚喷火龙 Mega X 750 盒况良好；星辰 小火龙进化组 1200 预订"></textarea>
+            <div class="local-parse-actions">
+              <button id="localParseButton" class="primary-button" type="button">本地解析成批量行</button>
+              <span>支持名称、编号、工作室、颜色、价格、状态、进化组、Mega X/Y。</span>
+            </div>
+          </section>
+          <div class="batch-panel">
+            <div class="batch-head">
+              <span>选择</span>
+              <span>类型</span>
+              <span>编号</span>
+              <span>名称</span>
+              <span>工作室</span>
+              <span>状态</span>
+              <span>颜色</span>
+              <span>价格</span>
+              <span>形态 / 备注</span>
+              <span></span>
+            </div>
+            <div id="batchRows" class="batch-rows"></div>
+          </div>
+        </section>
+
+        <section class="slide" data-slide="inventory">
+          <header class="slide-header compact">
+            <div>
+              <p class="eyebrow">Inventory</p>
+              <h1>库存列表</h1>
+            </div>
+            <div class="inventory-summary" id="inventorySummary"></div>
+          </header>
+          <div class="filters">
+            <input id="inventorySearch" type="search" placeholder="搜索编号、宝可梦、工作室、形态">
+            <select id="studioFilter">
+              <option value="all">全部工作室</option>
+              <option value="luxury">豪车工作室</option>
+              <option value="other">其他工作室</option>
+            </select>
+            <select id="colorFilter">
+              <option value="all">全部颜色</option>
+              <option value="原色">原色</option>
+              <option value="异色">异色</option>
+              <option value="特殊色">特殊色</option>
+            </select>
+            <select id="generationFilter">
+              <option value="all">全部世代</option>
+              <option value="gen1">001-151</option>
+              <option value="gen2">152-251</option>
+              <option value="gen3">252-386</option>
+              <option value="gen4">387-493</option>
+              <option value="extra">493 以后</option>
+            </select>
+            <input id="minPrice" type="number" min="0" placeholder="最低价">
+            <input id="maxPrice" type="number" min="0" placeholder="最高价">
+          </div>
+          <div id="inventoryList" class="inventory-list"></div>
+        </section>
+
+        <section class="slide" data-slide="extra">
+          <header class="slide-header compact">
+            <div>
+              <p class="eyebrow">Beyond 493</p>
+              <h1>扩展图鉴</h1>
+            </div>
+            <p class="slide-note">只显示你手动添加过的 493 以后编号。</p>
+          </header>
+          <div id="extraGrid" class="dex-grid compact-grid"></div>
+        </section>
+
+        <section class="slide" data-slide="sources">
+          <header class="slide-header compact">
+            <div>
+              <p class="eyebrow">Data</p>
+              <h1>数据说明</h1>
+            </div>
+          </header>
+          <div class="source-panel">
+            <p>001-493 用四个阶段展示，并额外提供超级进化分类；493 以后只在你新增库存后进入扩展图鉴。人物阵容包含小智各动画时代的代表队伍和八大师阵容，图标使用 PokeAPI sprites，已有本地图标会优先读取。</p>
+            <p>所有库存保存在当前浏览器本地存储中；导出 JSON 后可以备份或迁移，也可以导出 001-493 总图鉴长图。</p>
+            <a href="https://github.com/PokeAPI/sprites" target="_blank" rel="noreferrer">PokeAPI sprites</a>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="pokemonPickerModal" class="pokemon-modal" hidden>
+      <div class="pokemon-modal-backdrop" data-picker-close></div>
+      <section class="pokemon-picker" role="dialog" aria-modal="true" aria-labelledby="pokemonPickerTitle">
+        <header class="pokemon-picker-header">
+          <div>
+            <p class="eyebrow">Pokémon Picker</p>
+            <h2 id="pokemonPickerTitle">选择宝可梦</h2>
+          </div>
+          <button id="pokemonPickerClose" class="secondary-button" type="button" aria-label="关闭">关闭</button>
+        </header>
+        <div class="pokemon-picker-filters">
+          <input id="pokemonPickerSearch" type="search" placeholder="搜索名称或编号">
+          <select id="pokemonPickerGeneration"></select>
+        </div>
+        <div id="pokemonPickerGrid" class="pokemon-picker-grid"></div>
+      </section>
+    </div>
+
+    <div id="toastRegion" class="toast-region"></div>
+    <script src="./pokemon-data.js"></script>
+    <script src="./pokemon-evolution-data.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
